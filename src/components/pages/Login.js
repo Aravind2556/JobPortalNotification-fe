@@ -1,5 +1,7 @@
 import React, {useState, useContext} from 'react'
 import { DContext } from '../../context/Datacontext'
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { GetBrowser } from '../api/utils/GetBrowser';
 
 const Login = () => {
 
@@ -8,43 +10,99 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const HandleLogin = async (e)=> {
+    // const HandleLogin = async (e)=> {
 
-        e.preventDefault()
+    //     e.preventDefault()
 
-        if(email!=="" && password!==""){
-            fetch(`${BeURL}/login`, {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                credentials: "include",
-                body:JSON.stringify({
-                    email, password
-                })
-            })
-            .then(res=>res.json())
-            .then(data=>{
-                if(data.success){
-                    setIsAuth(true)
-                    setCurrentUser(data.user)
-                    setEmail('')
-                    setPassword('')
-                    window.location.href="/"
-                }else{
-                    alert(data.message)
-                }
-            })
-            .catch(err=>{
-                alert('Trouble in connecting to the Server! Please try again later.')
-                console.log('Error in Login:',err)
-            })
-        }
-        else{
-            alert("All fields are required!")
-        }
+    //     if(email!=="" && password!==""){
+    //         fetch(`${BeURL}/login`, {
+    //             method:"POST",
+    //             headers:{
+    //                 "Content-Type":"application/json"
+    //             },
+    //             credentials: "include",
+    //             body:JSON.stringify({
+    //                 email, password
+    //             })
+    //         })
+    //         .then(res=>res.json())
+    //         .then(data=>{
+    //             if(data.success){
+    //                 setIsAuth(true)
+    //                 setCurrentUser(data.user)
+    //                 setEmail('')
+    //                 setPassword('')
+    //                 window.location.href="/"
+    //             }else{
+    //                 alert(data.message)
+    //             }
+    //         })
+    //         .catch(err=>{
+    //             alert('Trouble in connecting to the Server! Please try again later.')
+    //             console.log('Error in Login:',err)
+    //         })
+    //     }
+    //     else{
+    //         alert("All fields are required!")
+    //     }
    
-    }
+    // }
+
+
+    const HandleLogin = async (e) => {
+        e.preventDefault();
+
+        if (email !== "" && password !== "") {
+            try {
+                // 1. Get Fingerprint ID
+                const fp = await FingerprintJS.load();
+                const result = await fp.get();
+                const fingerPrintId = result.visitorId;
+
+                // 2. Get Browser Name
+                const browserName = GetBrowser();
+
+                // 3. Get IP Address
+                const ipResponse = await fetch("https://api.ipify.org?format=json");
+                const ipData = await ipResponse.json();
+                const ipAddress = ipData.ip;
+
+                // 4. Send All Data to Backend
+                const res = await fetch(`${BeURL}/login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        fingerPrintId,
+                        browserName,
+                        ipAddress,
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    setIsAuth(true);
+                    setCurrentUser(data.user);
+                    setEmail("");
+                    setPassword("");
+                    window.location.href = "/";
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert("Trouble in connecting to the Server! Please try again later.");
+                console.log("Error in Login:", err);
+            }
+        } else {
+            alert("All fields are required!");
+        }
+    };
+
 
 
   return (
