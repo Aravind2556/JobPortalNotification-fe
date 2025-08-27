@@ -12,6 +12,8 @@ import { RaiseTicket } from './components/pages/RaiseTicket';
 import { Notification } from './components/pages/Notification';
 import { Tickets } from './components/pages/Tickets';
 import { ViewTickets } from './components/pages/ViewTickets';
+import { ImageCompressure } from './components/pages/ImageCompressure';
+import { ResumeProcess } from './components/pages/ResumeProcess';
 
 function App() {
   const { isAuth, currentUser } = useContext(DContext);
@@ -25,22 +27,26 @@ function App() {
       <Header />
       <Routes>
         {/* Authenticated routes */}
-        {isAuth && ['job-seeker', 'employer'].includes(currentUser?.role) && (
+        {/* {isAuth && ['job-seeker', 'employer'].includes(currentUser?.role) && ( */}
           <>
             <Route path="/raise-ticket" element={<RaiseTicket />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/viewtickets" element={<ViewTickets />}/>
+            <Route path="/image-compressure" element={<ImageCompressure/>} />
+            <Route path="/resume-process" element={<ResumeProcess/>} />
           </>
-        )}
+        {/* )} */}
 
-        {isAuth && ['admin'].includes(currentUser?.role) && (
+        {/* {isAuth && ['admin'].includes(currentUser?.role) && ( */}
           <>
             <Route path="/notification" element={<Notification />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/viewtickets" element={<ViewTickets/>} />
+            <Route path="/image-compressure" element={<ImageCompressure />} />
+            <Route path="/resume-process" element={<ResumeProcess />} />
           </>
-        )}
+        {/* )} */}
 
         {/* Public / Default Routes */}
         <Route

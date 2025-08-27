@@ -119,17 +119,19 @@ export default function Example() {
           <div href="#" className="text-sm/6 font-semibold text-gray-900">
             Company
           </div>
+          
           {isAuth ? (
             <div>
               <button onClick={()=>window.location.href='/notification'} className="text-sm/6 font-semibold text-gray-900">Notification</button>
             </div>
-          ) : (<div></div>) }
+          ) : ("") }
           {isAuth ? (
             <div>
               <button onClick={() => window.location.href = '/tickets'} className="text-sm/6 font-semibold text-gray-900">Get Assistance</button>
             </div>
-          ) : (<div></div>)}
-
+          ) : ("")}
+          <div className="text-sm/6 font-semibold text-gray-900" onClick={() => window.location.href ='/image-compressure'}>Image Compressure</div>
+          <div className="text-sm/6 font-semibold text-gray-900" onClick={() => window.location.href = '/resume-process'}>Resume Process </div>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {

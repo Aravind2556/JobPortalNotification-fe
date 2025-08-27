@@ -6,6 +6,9 @@ import { notificationReadActionApiAll } from '../components/api/RaiseTicket/noti
 import { fetchTicketsApi } from '../components/api/RaiseTicket/fetchTicketsApi'
 import { fetchViewTicketsIdApi } from '../components/api/RaiseTicket/fetchViewTicketsIdApi'
 import { resolveApi } from '../components/api/RaiseTicket/resolveApi'
+import {uploadBase64ImageApi} from '../components/api/CompressedImage/uploadBase64ImageApi'
+import { fetchBase64ImageApi } from '../components/api/CompressedImage/fetchBase64ImageApi'
+import { uploadBlobImageApi } from '../components/api/CompressedImage/uploadBlobImageApi'
 
 
 export const DContext = createContext()
@@ -18,6 +21,8 @@ const DataContext = ({children}) => {
     const [getNotification, setGetNotification] = useState([]);
     const [getTickets, setGetTickets] = useState([]);
     const [getTicketsViewId,setGetTicketsViewId]=useState({})
+    const [allBase64Image, setAllBase64Image] = useState([])
+    
 
 
     useEffect(()=>{
@@ -70,6 +75,19 @@ const DataContext = ({children}) => {
     const handleResolve = (ticketId) => {
         resolveApi(ticketId, BeURL)
     }
+    
+    const compressedBase64Image = (compressedBase64) => {
+        uploadBase64ImageApi(compressedBase64 ,BeURL);
+    }  
+
+    const handleBlobimage = (blob) => {
+        console.log("Blob in DataContext:", blob);
+        uploadBlobImageApi(blob, BeURL);
+    }
+           
+    useEffect(() => {
+        fetchBase64ImageApi(setAllBase64Image, BeURL);
+    }, []);  
 
 
     const handleLogout = () => {
@@ -90,7 +108,7 @@ const DataContext = ({children}) => {
         })
     }
 
-    const data = { isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout, RaiseTicket, handleNotification, getNotification, notificationReadAction, notificationReadActionAll, handleTickets, getTickets, handleViewTicketsId, getTicketsViewId, handleResolve }
+    const data = { isAuth, currentUser, setIsAuth, setCurrentUser, BeURL, handleLogout, RaiseTicket, handleNotification, getNotification, notificationReadAction, notificationReadActionAll, handleTickets, getTickets, handleViewTicketsId, getTicketsViewId, handleResolve, compressedBase64Image, allBase64Image, handleBlobimage } 
 
     return (
         <DContext.Provider value={data}>
